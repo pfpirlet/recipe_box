@@ -14,14 +14,25 @@ const addRecipe = (recipeName, recipeIngredients) => {
 	}
 };
 
-const recipeReducer = (state = [{id: 0, recipeName: "Nom de recette", recipeIngredients: "ail, oignon"}], action) => {
+const deleteRecipe = (key) => {
+	return {
+		type: 'DELETE',
+		key: key
+	}
+};
+
+const recipeReducer = (state = [{recipeId: 0, recipeName: "Nom de recette", recipeIngredients: "ail, oignon"}], action) => {
 	switch (action.type) {
 		case 'ADD':
+			var stateLength = state.length;
 			return state.concat({
-				id: state.length,
+				recipeId: stateLength,
 				recipeName: action.recipeName,
 				recipeIngredients: action.recipeIngredients
 			});
+		case 'DELETE':
+			console.log(action.key);
+			return [...state.slice(0, action.key), ...state.slice(action.key +1)];
 		default:
 			return state;
 	}
@@ -39,6 +50,9 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		submitNewRecipe: (recipe) => {
 			dispatch(addRecipe(recipe.recipeName, recipe.recipeIngredients))
+		},
+		deleteRecipe: (idx) => {
+			dispatch(deleteRecipe(idx))
 		}
 	}
 };
@@ -73,16 +87,23 @@ class Presentational extends React.Component {
 		});
 	}
 
+	deleteRecipe = (idx) => {
+		this.props.deleteRecipe(idx);
+	}
+
 	render() {
+		console.log(JSON.stringify(this.props.recipes));
 		return (
 			<div>
 				<h2>Recettes</h2>
 				<ul>
-					{this.props.recipes.map((recipe, i) => {
-						return (<div><li key={i}>{recipe.recipeName}</li><br/>
-						{recipe.recipeIngredients}</div>)
-					})
-				}
+					{this.props.recipes.map((recipe, idx) => {
+						return (<div><li key={recipe.recipeId}>{recipe.recipeName}<br/>
+						{recipe.recipeIngredients}<br/>
+						<button onClick={() => this.props.deleteRecipe(recipe.recipeId)}>Delete</button></li></div>)
+																										}
+																	)
+					}
 				</ul>
 				<input placeholder="Recipe Name" value={this.state.recipeName} onChange={this.handleChangeName}/><br/>
 				<textarea placeholder="Recipe Ingredients" value={this.state.recipeIngredients} onChange={this.handleChangeIngredients}/><br/>
