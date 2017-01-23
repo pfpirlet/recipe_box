@@ -32,7 +32,7 @@ const recipeReducer = (state = [{recipeId: 0, recipeName: "Nom de recette", reci
 			});
 		case 'DELETE':
 			console.log(action.key);
-			return [...state.slice(0, action.key), ...state.slice(action.key +1)];
+			return state.filter(recipe => recipe["recipeId"] !== action.key);
 		default:
 			return state;
 	}
