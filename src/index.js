@@ -22,9 +22,9 @@ const deleteRecipe = (key) => {
 };
 
 const recipeReducer = (state = [{recipeId: 0, recipeName: "Nom de recette", recipeIngredients: "ail, oignon"}], action) => {
+	var stateLength = state[state.length - 1]["recipeId"] + 1;
 	switch (action.type) {
 		case 'ADD':
-			var stateLength = state.length;
 			return state.concat({
 				recipeId: stateLength,
 				recipeName: action.recipeName,
