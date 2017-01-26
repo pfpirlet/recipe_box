@@ -87,6 +87,15 @@ class Presentational extends React.Component {
 			recipeName: '',
 			recipeIngredients: ''
 		});
+		document.getElementById('myModal').style.display = "none";
+	}
+
+	cancelRecipe = () => {
+		this.setState({
+			recipeName: '',
+			recipeIngredients: ''
+		});
+		document.getElementById('myModal').style.display = "none";
 	}
 
 	deleteRecipe = (idx) => {
@@ -106,8 +115,8 @@ class Presentational extends React.Component {
   					<div className="modal-body">
     					<p><input placeholder="Recipe Name" value={this.state.recipeName} onChange={this.handleChangeName}/></p>
 							<p><textarea placeholder="Recipe Ingredients" value={this.state.recipeIngredients} onChange={this.handleChangeIngredients}/><br/></p>
-  						<button onClick={this.submitRecipe}>Submit</button>
-  						<button onClick={() => {document.getElementById('myModal').style.display = "none";}}>Cancel</button>
+  						<button onClick={this.submitRecipe} autofocus>Submit</button>
+  						<button onClick={this.cancelRecipe}>Cancel</button>
   					</div>
 					</div>
 				</div>
