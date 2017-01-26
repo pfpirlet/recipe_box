@@ -4,6 +4,8 @@ import { Provider, connect } from 'react-redux'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 
+require ('./index.css')
+
 //Redux____________________________________________
 
 const addRecipe = (recipeName, recipeIngredients) => {
@@ -95,7 +97,24 @@ class Presentational extends React.Component {
 		console.log(JSON.stringify(this.props.recipes));
 		return (
 			<div>
+				<div id="myModal" className="modal">
+					{/* Modal content */}
+					<div className="modal-content">
+  					<div className="modal-header">
+    					<h2>Add a new recipe</h2>
+  					</div>
+  					<div className="modal-body">
+    					<p><input placeholder="Recipe Name" value={this.state.recipeName} onChange={this.handleChangeName}/></p>
+							<p><textarea placeholder="Recipe Ingredients" value={this.state.recipeIngredients} onChange={this.handleChangeIngredients}/><br/></p>
+  						<button onClick={this.submitRecipe}>Submit</button>
+  						<button onClick={() => {document.getElementById('myModal').style.display = "none";}}>Cancel</button>
+  					</div>
+					</div>
+				</div>
+
 				<h2>Recettes</h2>
+
+				{/* Main Page */}
 				<ul>
 					{this.props.recipes.map((recipe, idx) => {
 						return (<div><li key={recipe.recipeId}>{recipe.recipeName}<br/>
@@ -105,9 +124,7 @@ class Presentational extends React.Component {
 																	)
 					}
 				</ul>
-				<input placeholder="Recipe Name" value={this.state.recipeName} onChange={this.handleChangeName}/><br/>
-				<textarea placeholder="Recipe Ingredients" value={this.state.recipeIngredients} onChange={this.handleChangeIngredients}/><br/>
-				<button onClick={this.submitRecipe}>Submit</button>
+				<button onClick={() => {document.getElementById('myModal').style.display = "block";}}>Submit</button>
 			</div>
 		);
 	}
