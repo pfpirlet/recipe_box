@@ -106,20 +106,7 @@ class Presentational extends React.Component {
 		console.log(JSON.stringify(this.props.recipes));
 		return (
 			<div>
-				<div id="myModal" className="modal">
-					{/* Modal content */}
-					<div className="modal-content">
-  					<div className="modal-header">
-    					<h2>Add a new recipe</h2>
-  					</div>
-  					<div className="modal-body">
-    					<p><input placeholder="Recipe Name" value={this.state.recipeName} onChange={this.handleChangeName}/></p>
-							<p><textarea placeholder="Recipe Ingredients" value={this.state.recipeIngredients} onChange={this.handleChangeIngredients}/><br/></p>
-  						<button onClick={this.submitRecipe} autofocus>Submit</button>
-  						<button onClick={this.cancelRecipe}>Cancel</button>
-  					</div>
-					</div>
-				</div>
+				<ModalPresentational recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe}/>
 
 				<h2>Recettes</h2>
 
@@ -133,11 +120,32 @@ class Presentational extends React.Component {
 																	)
 					}
 				</ul>
-				<button onClick={() => {document.getElementById('myModal').style.display = "block";}}>Submit</button>
+				<button onClick={() => {document.getElementById('myModal').style.display = "block";}}>Add recipe</button>
 			</div>
 		);
 	}
 };
+
+class ModalPresentational extends React.Component {
+	render () {
+		return(
+				<div id="myModal" className="modal">
+					{/* Modal content */}
+					<div className="modal-content">
+  					<div className="modal-header">
+    					<h2>Add a new recipe</h2>
+  					</div>
+  					<div className="modal-body">
+    					<p><input placeholder="Recipe Name" value={this.props.recipeName} onChange={this.props.handleChangeName}/></p>
+							<p><textarea placeholder="Recipe Ingredients" value={this.props.recipeIngredients} onChange={this.props.handleChangeIngredients}/><br/></p>
+  						<button onClick={this.props.submitRecipe} autofocus>Submit</button>
+  						<button onClick={this.props.cancelRecipe}>Cancel</button>
+  					</div>
+					</div>
+				</div>
+			)
+	}
+}
 
 const Container = connect(mapStateToProps, mapDispatchToProps)(Presentational);
 
