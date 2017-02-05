@@ -23,7 +23,16 @@ const deleteRecipe = (key) => {
 	}
 };
 
-const recipeReducer = (state = [{recipeId: 0, recipeName: "Nom de recette", recipeIngredients: "ail, oignon"}], action) => {
+const editRecipe = (recipeId, recipeName, recipeIngredients) => {
+	return {
+		type: 'EDIT',
+		recipeId: recipeId,
+		recipeName: recipeName,
+		recipeIngredients: recipeIngredients
+	}
+};
+
+const recipeReducer = (state, action) => {
 	var stateLength = state[state.length - 1]["recipeId"] + 1;
 	switch (action.type) {
 		case 'ADD':
@@ -35,12 +44,24 @@ const recipeReducer = (state = [{recipeId: 0, recipeName: "Nom de recette", reci
 		case 'DELETE':
 			console.log(action.key);
 			return state.filter(recipe => recipe["recipeId"] !== action.key);
+		case 'EDIT':
+				var temp = state.filter(recipe => recipe["recipeId"] !== action.recipeId);
+				console.log("temp: " + JSON.stringify(temp));
+				return temp.concat({
+				recipeId: action.recipeId,
+				recipeName: action.recipeName,
+				recipeIngredients: action.recipeIngredients
+			}).sort((a,b) => {a - b});
 		default:
 			return state;
 	}
 }
 
-const store = createStore(recipeReducer);
+const initialState = [{ 
+  recipeId: 0, recipeName: "Nom de recette", recipeIngredients: "ail, oignon"
+}];
+
+const store = createStore(recipeReducer, initialState);
 
 //React-redux______________________________________
 
@@ -55,6 +76,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		deleteRecipe: (idx) => {
 			dispatch(deleteRecipe(idx))
+		},
+		editRecipe: (recipe) => {
+			dispatch(editRecipe(recipe.recipeId, recipe.recipeName, recipe.recipeIngredients))
 		}
 	}
 };
@@ -64,6 +88,7 @@ class Presentational extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			recipeId: '',
 			recipeName: '',
 			recipeIngredients: ''
 		}
@@ -82,8 +107,9 @@ class Presentational extends React.Component {
 	}
 
 	submitRecipe = () => {
-		this.props.submitNewRecipe(this.state);
+		this.state.recipeId === '' ? this.props.submitNewRecipe(this.state) : this.props.editRecipe(this.state);
 		this.setState({
+			recipeId: '',
 			recipeName: '',
 			recipeIngredients: ''
 		});
@@ -102,11 +128,20 @@ class Presentational extends React.Component {
 		this.props.deleteRecipe(idx);
 	}
 
+	editRecipe = (idx) => {
+		this.setState({
+			recipeId: idx,
+			recipeName: this.props.recipes[idx].recipeName,
+			recipeIngredients: this.props.recipes[idx].recipeIngredients
+		});
+		document.getElementById('myModal').style.display = "block";
+	}
+
 	render() {
 		console.log(JSON.stringify(this.props.recipes));
 		return (
 			<div>
-				<ModalPresentational recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe}/>
+				<ModalPresentational recipeId={this.state.recipeId} recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe} editRecipe={this.editRecipe}/>
 
 				<h2>Recettes</h2>
 
@@ -115,7 +150,9 @@ class Presentational extends React.Component {
 					{this.props.recipes.map((recipe, idx) => {
 						return (<div><li key={recipe.recipeId}>{recipe.recipeName}<br/>
 						{recipe.recipeIngredients}<br/>
-						<button onClick={() => this.props.deleteRecipe(recipe.recipeId)}>Delete</button></li></div>)
+						<button onClick={() => this.props.deleteRecipe(recipe.recipeId)}>Delete</button>
+						<button onClick={() => this.editRecipe(recipe.recipeId)}>Edit</button>
+						</li></div>)
 																										}
 																	)
 					}
@@ -138,7 +175,7 @@ class ModalPresentational extends React.Component {
   					<div className="modal-body">
     					<p><input placeholder="Recipe Name" value={this.props.recipeName} onChange={this.props.handleChangeName}/></p>
 							<p><textarea placeholder="Recipe Ingredients" value={this.props.recipeIngredients} onChange={this.props.handleChangeIngredients}/><br/></p>
-  						<button onClick={this.props.submitRecipe} autofocus>Submit</button>
+  						<button onClick={this.props.submitRecipe} autoFocus>Submit</button>
   						<button onClick={this.props.cancelRecipe}>Cancel</button>
   					</div>
 					</div>
