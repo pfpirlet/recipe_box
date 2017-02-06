@@ -51,7 +51,7 @@ const recipeReducer = (state, action) => {
 				recipeId: action.recipeId,
 				recipeName: action.recipeName,
 				recipeIngredients: action.recipeIngredients
-			}).sort((a,b) => {a - b});
+			}).sort((a,b) => {return parseFloat(a.recipeId) - parseFloat(b.recipeId)});
 		default:
 			return state;
 	}
