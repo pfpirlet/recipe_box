@@ -139,12 +139,12 @@ class Presentational extends React.Component {
 			if (recipe.recipeId === keyValue) {
 				return recipe.recipeName;
 			}
-		}).slice(1);
+		});
 		var tempIngredients = this.props.recipes.map(recipe => {
 			if (recipe.recipeId === keyValue) {
 				return recipe.recipeIngredients;
 			}
-		}).slice(1);
+		});
 		console.log("tempName: " + tempName + " tempIngredients: " + tempIngredients);
 		this.setState({
 			recipeId: keyValue,
