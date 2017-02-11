@@ -42,16 +42,20 @@ const recipeReducer = (state, action) => {
 				recipeIngredients: action.recipeIngredients
 			});
 		case 'DELETE':
-			console.log(action.key);
+			console.log("deleting n " + action.key + " and new state = " + state.filter(recipe => recipe["recipeId"] !== action.key));
 			return state.filter(recipe => recipe["recipeId"] !== action.key);
 		case 'EDIT':
-				var temp = state.filter(recipe => recipe["recipeId"] !== action.recipeId);
-				console.log("temp: " + JSON.stringify(temp));
-				return temp.concat({
-				recipeId: action.recipeId,
-				recipeName: action.recipeName,
-				recipeIngredients: action.recipeIngredients
-			}).sort((a,b) => {return parseFloat(a.recipeId) - parseFloat(b.recipeId)});
+				const updatedState = state.map(item => {
+					if (item.recipeId === action.recipeId) {
+						return {recipeId: action.recipeId,
+										recipeName: action.recipeName,
+										recipeIngredients: action.recipeIngredients}
+					} else {
+						return item;
+					}
+				});
+				console.log("updatedState: " + JSON.stringify(updatedState));
+				return updatedState.sort((a,b) => {return parseInt(a.recipeId) - parseInt(b.recipeId)});
 		default:
 			return state;
 	}
@@ -106,7 +110,7 @@ class Presentational extends React.Component {
 		});
 	}
 
-	submitRecipe = () => {
+	submitRecipe = (keyValue) => {
 		this.state.recipeId === '' ? this.props.submitNewRecipe(this.state) : this.props.editRecipe(this.state);
 		this.setState({
 			recipeId: '',
@@ -124,15 +128,28 @@ class Presentational extends React.Component {
 		document.getElementById('myModal').style.display = "none";
 	}
 
-	deleteRecipe = (idx) => {
-		this.props.deleteRecipe(idx);
+	deleteRecipe = (keyValue) => {
+		this.props.deleteRecipe(keyValue);
 	}
 
-	editRecipe = (idx) => {
+	editRecipe = (keyValue) => {
+		console.log("Editing keyValue N " + keyValue);
+		var tempName = this.props.recipes.map(recipe => {
+			console.log("recipe: " + JSON.stringify(recipe));
+			if (recipe.recipeId === keyValue) {
+				return recipe.recipeName;
+			}
+		}).slice(1);
+		var tempIngredients = this.props.recipes.map(recipe => {
+			if (recipe.recipeId === keyValue) {
+				return recipe.recipeIngredients;
+			}
+		}).slice(1);
+		console.log("tempName: " + tempName + " tempIngredients: " + tempIngredients);
 		this.setState({
-			recipeId: idx,
-			recipeName: this.props.recipes[idx].recipeName,
-			recipeIngredients: this.props.recipes[idx].recipeIngredients
+			recipeId: keyValue,
+			recipeName: tempName,
+			recipeIngredients: tempIngredients
 		});
 		document.getElementById('myModal').style.display = "block";
 	}
@@ -148,10 +165,11 @@ class Presentational extends React.Component {
 				{/* Main Page */}
 				<ul>
 					{this.props.recipes.map((recipe, idx) => {
-						return (<div><li key={recipe.recipeId}>{recipe.recipeName}<br/>
+						var keyValue = recipe.recipeId;
+						return (<div><li key={keyValue}>{recipe.recipeName}<br/>
 						{recipe.recipeIngredients}<br/>
-						<button onClick={() => this.props.deleteRecipe(recipe.recipeId)}>Delete</button>
-						<button onClick={() => this.editRecipe(recipe.recipeId)}>Edit</button>
+						<button onClick={() => this.props.deleteRecipe(keyValue)}>Delete</button>
+						<button onClick={() => this.editRecipe(keyValue)}>Edit</button>
 						</li></div>)
 																										}
 																	)
