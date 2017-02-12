@@ -42,7 +42,6 @@ const recipeReducer = (state, action) => {
 				recipeIngredients: action.recipeIngredients
 			});
 		case 'DELETE':
-			console.log("deleting n " + action.key + " and new state = " + state.filter(recipe => recipe["recipeId"] !== action.key));
 			return state.filter(recipe => recipe["recipeId"] !== action.key);
 		case 'EDIT':
 				const updatedState = state.map(item => {
@@ -54,7 +53,6 @@ const recipeReducer = (state, action) => {
 						return item;
 					}
 				});
-				console.log("updatedState: " + JSON.stringify(updatedState));
 				return updatedState.sort((a,b) => {return parseInt(a.recipeId) - parseInt(b.recipeId)});
 		default:
 			return state;
@@ -133,19 +131,13 @@ class Presentational extends React.Component {
 	}
 
 	editRecipe = (keyValue) => {
-		console.log("Editing keyValue N " + keyValue);
-		var tempName = this.props.recipes.map(recipe => {
-			console.log("recipe: " + JSON.stringify(recipe));
+		var tempName, tempIngredients;
+		this.props.recipes.forEach(recipe => {
 			if (recipe.recipeId === keyValue) {
-				return recipe.recipeName;
+				tempName = recipe.recipeName;
+				tempIngredients = recipe.recipeIngredients;
 			}
 		});
-		var tempIngredients = this.props.recipes.map(recipe => {
-			if (recipe.recipeId === keyValue) {
-				return recipe.recipeIngredients;
-			}
-		});
-		console.log("tempName: " + tempName + " tempIngredients: " + tempIngredients);
 		this.setState({
 			recipeId: keyValue,
 			recipeName: tempName,
@@ -155,7 +147,6 @@ class Presentational extends React.Component {
 	}
 
 	render() {
-		console.log(JSON.stringify(this.props.recipes));
 		return (
 			<div>
 				<ModalPresentational recipeId={this.state.recipeId} recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe} editRecipe={this.editRecipe}/>
