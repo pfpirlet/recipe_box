@@ -4,6 +4,7 @@ import { Provider, connect } from 'react-redux'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 
+require ('./bulma.css')
 require ('./index.css')
 
 //Redux____________________________________________
@@ -149,9 +150,12 @@ class Presentational extends React.Component {
 	render() {
 		return (
 			<div>
+			<div className="columns">
+			<div className="column" />
+			<div className="column">
 				<ModalPresentational recipeId={this.state.recipeId} recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe} editRecipe={this.editRecipe}/>
 
-				<h2>Recettes</h2>
+				<h1 className="title is-1">RecipeBox by pfpirlet</h1>
 
 				{/* Main Page */}
 				<ul>
@@ -159,7 +163,7 @@ class Presentational extends React.Component {
 						var keyValue = recipe.recipeId;
 						return (<div><li key={keyValue}>{recipe.recipeName}<br/>
 						{recipe.recipeIngredients}<br/>
-						<button onClick={() => this.props.deleteRecipe(keyValue)}>Delete</button>
+						<button className="button" onClick={() => this.props.deleteRecipe(keyValue)}>Delete</button>
 						<button onClick={() => this.editRecipe(keyValue)}>Edit</button>
 						</li></div>)
 																										}
@@ -167,6 +171,9 @@ class Presentational extends React.Component {
 					}
 				</ul>
 				<button onClick={() => {document.getElementById('myModal').style.display = "block";}}>Add recipe</button>
+			</div>
+			<div className="column" />
+			</div>
 			</div>
 		);
 	}
