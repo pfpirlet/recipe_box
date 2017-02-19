@@ -34,7 +34,13 @@ const editRecipe = (recipeId, recipeName, recipeIngredients) => {
 };
 
 const recipeReducer = (state, action) => {
-	var stateLength = state[state.length - 1]["recipeId"] + 1;
+	var stateLength = (state) => {
+		if ((state[state.length - 1]["recipeId"] + 1).isNaN() === 1) {
+			return 1;
+		} else {
+			return state[state.length - 1]["recipeId"] + 1;
+		}
+	};
 	switch (action.type) {
 		case 'ADD':
 			return state.concat({
@@ -61,7 +67,7 @@ const recipeReducer = (state, action) => {
 }
 
 const initialState = [{ 
-  recipeId: 0, recipeName: "Nom de recette", recipeIngredients: "ail, oignon"
+  recipeId: 0, recipeName: "Paella", recipeIngredients: "Rice, saffron, jámon, mossels"
 }];
 
 const store = createStore(recipeReducer, initialState);
@@ -155,22 +161,54 @@ class Presentational extends React.Component {
 			<div className="column">
 				<ModalPresentational recipeId={this.state.recipeId} recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe} editRecipe={this.editRecipe}/>
 
-				<h1 className="title is-1">RecipeBox by pfpirlet</h1>
+				<h1 style={{padding: 25}} className="title is-1 has-text-centered">RecipeBox</h1><br/>
 
 				{/* Main Page */}
 				<ul>
 					{this.props.recipes.map((recipe, idx) => {
 						var keyValue = recipe.recipeId;
-						return (<div><li key={keyValue}>{recipe.recipeName}<br/>
-						{recipe.recipeIngredients}<br/>
-						<button className="button" onClick={() => this.props.deleteRecipe(keyValue)}>Delete</button>
-						<button onClick={() => this.editRecipe(keyValue)}>Edit</button>
-						</li></div>)
+						return (
+							<div className="columns">
+								<div className="column">
+									<li key={keyValue}>
+										<b>{recipe.recipeName}</b><br/>
+										{recipe.recipeIngredients}
+									</li>
+								</div>
+								<div className="column is-narrow">
+									<div className="control is-grouped">
+										<p className="control">
+											<button className="button is-warning is-outlined" onClick={() => this.editRecipe(keyValue)}>Edit</button>
+										</p>
+										<p className="control">
+											<button className="button is-danger is-outlined" onClick={() => this.props.deleteRecipe(keyValue)}>
+												<span className="icon is-small"><i className="fa fa-times"></i></span>
+    										<span>Delete</span>
+    									</button>
+										</p>
+									</div>
+								</div>
+							</div>
+							)
 																										}
 																	)
 					}
 				</ul>
-				<button onClick={() => {document.getElementById('myModal').style.display = "block";}}>Add recipe</button>
+				<br />
+				<p className="control">
+					<button className="button is-primary is-outlined" onClick={() => {document.getElementById('myModal').style.display = "block";}}>Add recipe</button>
+					<br/>
+				</p>
+				<footer>
+				<p className="control">
+					<p className="has-text-centered">
+						A project by <a link="https://github.com/pfpirlet">pfpirlet</a>
+					</p>
+					<p className="has-text-centered">
+						Sources: <a link="https://github.com/pfpirlet/recipe_box">https://github.com/pfpirlet/recipe_box</a>
+					</p>
+				</p>
+				</footer>
 			</div>
 			<div className="column" />
 			</div>
@@ -186,13 +224,22 @@ class ModalPresentational extends React.Component {
 					{/* Modal content */}
 					<div className="modal-content">
   					<div className="modal-header">
-    					<h2>Add a new recipe</h2>
+    					<h2 className="title is-2 has-text-centered">Add a new recipe</h2>
   					</div>
   					<div className="modal-body">
-    					<p><input placeholder="Recipe Name" value={this.props.recipeName} onChange={this.props.handleChangeName}/></p>
-							<p><textarea placeholder="Recipe Ingredients" value={this.props.recipeIngredients} onChange={this.props.handleChangeIngredients}/><br/></p>
-  						<button onClick={this.props.submitRecipe} autoFocus>Submit</button>
-  						<button onClick={this.props.cancelRecipe}>Cancel</button>
+    					<p className="control"><input className="input" placeholder="Recipe Name" value={this.props.recipeName} onChange={this.props.handleChangeName}/></p>
+							<p className="control"><textarea className="textarea" placeholder="Recipe Ingredients" value={this.props.recipeIngredients} onChange={this.props.handleChangeIngredients}/><br/></p>
+  						<div className="control is-grouped">
+  							<p className="control">
+  								<button className="button is-primary is-outlined" onClick={this.props.submitRecipe}>
+  									<span className="icon is-small"><i className="fa fa-check"></i></span>
+    								<span>Save</span>
+    							</button>
+    						</p>
+  							<p className="control">
+  								<button className="button is-warning is-outlined" onClick={this.props.cancelRecipe}>Cancel</button>
+  							</p>
+  						</div>
   					</div>
 					</div>
 				</div>
