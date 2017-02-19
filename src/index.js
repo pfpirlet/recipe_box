@@ -35,7 +35,7 @@ const editRecipe = (recipeId, recipeName, recipeIngredients) => {
 
 const recipeReducer = (state, action) => {
 	var stateLength = (state) => {
-		if ((state[state.length - 1]["recipeId"] + 1).isNaN() === 1) {
+		if (isNaN(state[state.length - 1]["recipeId"] + 1) === 1) {
 			return 1;
 		} else {
 			return state[state.length - 1]["recipeId"] + 1;
@@ -44,7 +44,7 @@ const recipeReducer = (state, action) => {
 	switch (action.type) {
 		case 'ADD':
 			return state.concat({
-				recipeId: stateLength,
+				recipeId: stateLength(state),
 				recipeName: action.recipeName,
 				recipeIngredients: action.recipeIngredients
 			});
@@ -167,17 +167,19 @@ class Presentational extends React.Component {
 				<ul>
 					{this.props.recipes.map((recipe, idx) => {
 						var keyValue = recipe.recipeId;
+						var tableId = "table-" + keyValue;
 						var ingredients = recipe.recipeIngredients.split(",");
 						return (
 							<div className="columns">
 								<div className="column">
 										<table className="table is-striped">
 											<thead onClick={() => {
-												document.getElementById("table-{keyValue}").style.display === 'none' ? document.getElementById("table-{keyValue}").style.display = 'block' : document.getElementById("table-{keyValue}").style.display = 'none';
+												console.log(tableId);
+												document.getElementById({tableId}).style.display === 'none' ? document.getElementById({tableId}).style.display = 'block' : document.getElementById({tableId}).style.display = 'none';
 											}}>
 												<th>{recipe.recipeName}</th>
 											</thead>
-											<tbody id='table-{keyValue}' style={{display: 'none'}}>
+											<tbody ref={tableId} style={{display: 'none'}}>
 												{ingredients.map((item) => {
 													return <tr><th>{item}</th></tr>;
 												})}
