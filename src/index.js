@@ -167,12 +167,21 @@ class Presentational extends React.Component {
 				<ul>
 					{this.props.recipes.map((recipe, idx) => {
 						var keyValue = recipe.recipeId;
+						var ingredients = recipe.recipeIngredients.split(",");
 						return (
 							<div className="columns">
 								<div className="column">
 									<li key={keyValue}>
-										<b>{recipe.recipeName}</b><br/>
-										{recipe.recipeIngredients}
+										<table className="table is-striped">
+											<thead>
+												<th>{recipe.recipeName}</th>
+											</thead>
+											<tbody>
+												{ingredients.map((item) => {
+													return <tr><th>{item}</th></tr>;
+												})}
+											</tbody>
+										</table>
 									</li>
 								</div>
 								<div className="column is-narrow">
