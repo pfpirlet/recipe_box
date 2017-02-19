@@ -171,18 +171,18 @@ class Presentational extends React.Component {
 						return (
 							<div className="columns">
 								<div className="column">
-									<li key={keyValue}>
 										<table className="table is-striped">
-											<thead>
+											<thead onClick={() => {
+												document.getElementById("table-{keyValue}").style.display === 'none' ? document.getElementById("table-{keyValue}").style.display = 'block' : document.getElementById("table-{keyValue}").style.display = 'none';
+											}}>
 												<th>{recipe.recipeName}</th>
 											</thead>
-											<tbody>
+											<tbody id='table-{keyValue}' style={{display: 'none'}}>
 												{ingredients.map((item) => {
 													return <tr><th>{item}</th></tr>;
 												})}
 											</tbody>
 										</table>
-									</li>
 								</div>
 								<div className="column is-narrow">
 									<div className="control is-grouped">
