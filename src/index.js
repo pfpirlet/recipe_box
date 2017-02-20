@@ -35,7 +35,7 @@ const editRecipe = (recipeId, recipeName, recipeIngredients) => {
 
 const recipeReducer = (state, action) => {
 	var stateLength = (state) => {
-		if (isNaN(state[state.length - 1]["recipeId"] + 1) === 1) {
+		if (state.length == 0) {
 			return 1;
 		} else {
 			return state[state.length - 1]["recipeId"] + 1;
