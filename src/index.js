@@ -99,7 +99,8 @@ class Presentational extends React.Component {
 		this.state = {
 			recipeId: '',
 			recipeName: '',
-			recipeIngredients: ''
+			recipeIngredients: '',
+			isClicked: false
 		}
 	}
 
@@ -167,23 +168,18 @@ class Presentational extends React.Component {
 				<ul>
 					{this.props.recipes.map((recipe, idx) => {
 						var keyValue = recipe.recipeId;
-						var tableId = "table-" + keyValue;
 						var ingredients = recipe.recipeIngredients.split(",");
 						return (
 							<div className="columns">
 								<div className="column">
 										<table className="table is-striped">
 											<thead onClick={() => {
-												console.log(tableId);
-												document.getElementById({tableId}).style.display === 'none' ? document.getElementById({tableId}).style.display = 'block' : document.getElementById({tableId}).style.display = 'none';
-											}}>
+												this.state.isClicked ? this.setState({isClicked: false}) : this.setState({isClicked: true});
+												console.log(this.state.isClicked);
+												}}>
 												<th>{recipe.recipeName}</th>
 											</thead>
-											<tbody ref={tableId} style={{display: 'none'}}>
-												{ingredients.map((item) => {
-													return <tr><th>{item}</th></tr>;
-												})}
-											</tbody>
+											{this.state.isClicked ? <IngredientsTable ingredients={ingredients}/> : ""}
 										</table>
 								</div>
 								<div className="column is-narrow">
@@ -227,6 +223,18 @@ class Presentational extends React.Component {
 		);
 	}
 };
+
+class IngredientsTable extends React.Component {
+	render () {
+		return (
+			<tbody>
+				{this.props.ingredients.map((item) => {
+					return <tr><th>{item}</th></tr>;
+				})}
+			</tbody>	
+			)
+	}
+}
 
 class ModalPresentational extends React.Component {
 	render () {
