@@ -100,7 +100,7 @@ class Presentational extends React.Component {
 			recipeId: '',
 			recipeName: '',
 			recipeIngredients: '',
-			isClicked: false
+			isClicked: true
 		}
 	}
 
@@ -174,12 +174,13 @@ class Presentational extends React.Component {
 								<div className="column">
 										<table className="table is-striped">
 											<thead onClick={() => {
-												this.state.isClicked ? this.setState({isClicked: false}) : this.setState({isClicked: true});
-												console.log(this.state.isClicked);
+												var localIsClicked = [...this.state.isClicked];
+												localIsClicked[keyValue] ? this.setState({isClicked: localIsClicked.slice(0,keyValue).concat(false).concat(localIsClicked.slice(keyValue + 1))}) : this.setState({isClicked: localIsClicked.slice(0,keyValue).concat(true).concat(localIsClicked.slice(keyValue + 1))});
+												console.log(localIsClicked[keyValue]);
 												}}>
 												<th>{recipe.recipeName}</th>
 											</thead>
-											{this.state.isClicked ? <IngredientsTable ingredients={ingredients}/> : ""}
+											{this.state.isClicked[keyValue] ? <IngredientsTable ingredients={ingredients}/> : ""}
 										</table>
 								</div>
 								<div className="column is-narrow">
