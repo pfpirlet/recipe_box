@@ -35,7 +35,7 @@ const editRecipe = (recipeId, recipeName, recipeIngredients) => {
 
 const recipeReducer = (state, action) => {
 	var stateLength = (state) => {
-		if (state.length == 0) {
+		if (state.length === 0) {
 			return 1;
 		} else {
 			return state[state.length - 1]["recipeId"] + 1;
@@ -66,11 +66,16 @@ const recipeReducer = (state, action) => {
 	}
 }
 
-const initialState = [{ 
-  recipeId: 0, recipeName: "Paella", recipeIngredients: "Rice, saffron, jámon, mossels"
-}];
+const initialState = () => {
+	if (sessionStorage.length !== 0) {
+		console.log(JSON.parse(sessionStorage.getItem('state')));
+		return JSON.parse(sessionStorage.getItem('state'));
+	} else {
+		return [{recipeId: 0, recipeName: "Paella", recipeIngredients: "Rice, saffron, jámon, mossels"}];
+	}
+}
 
-const store = createStore(recipeReducer, initialState);
+const store = createStore(recipeReducer, initialState());
 
 //React-redux______________________________________
 
@@ -210,10 +215,10 @@ class Presentational extends React.Component {
 				<footer>
 				<p className="control">
 					<p className="has-text-centered">
-						A project by <a link="https://github.com/pfpirlet">pfpirlet</a>
+						A project by <a href="https://github.com/pfpirlet">pfpirlet</a>
 					</p>
 					<p className="has-text-centered">
-						Sources: <a link="https://github.com/pfpirlet/recipe_box">https://github.com/pfpirlet/recipe_box</a>
+						Sources: <a href="https://github.com/pfpirlet/recipe_box">https://github.com/pfpirlet/recipe_box</a>
 					</p>
 				</p>
 				</footer>
@@ -222,6 +227,11 @@ class Presentational extends React.Component {
 			</div>
 			</div>
 		);
+	}
+
+	componentDidUpdate () {
+		console.log(this.props.recipes);
+		sessionStorage.setItem('state', JSON.stringify(this.props.recipes));
 	}
 };
 
