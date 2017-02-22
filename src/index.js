@@ -159,6 +159,12 @@ class Presentational extends React.Component {
 		document.getElementById('myModal').style.display = "block";
 	}
 
+	componentWillMount () {
+		this.props.recipes.map(()=>{
+			this.setState({isClicked: [].concat(false)});
+		});
+	}
+
 	render() {
 		return (
 			<div>
