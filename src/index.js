@@ -68,7 +68,6 @@ const recipeReducer = (state, action) => {
 
 const initialState = () => {
 	if (sessionStorage.length !== 0) {
-		console.log(JSON.parse(sessionStorage.getItem('state')));
 		return JSON.parse(sessionStorage.getItem('state'));
 	} else {
 		return [{recipeId: 0, recipeName: "Paella", recipeIngredients: "Rice, saffron, jámon, mossels"}];
@@ -187,7 +186,6 @@ class Presentational extends React.Component {
 											<thead onClick={() => {
 												var localIsClicked = [...this.state.isClicked];
 												localIsClicked[keyValue] ? this.setState({isClicked: localIsClicked.slice(0,keyValue).concat(false).concat(localIsClicked.slice(keyValue + 1))}) : this.setState({isClicked: localIsClicked.slice(0,keyValue).concat(true).concat(localIsClicked.slice(keyValue + 1))});
-												console.log(localIsClicked[keyValue]);
 												}}>
 												<th>{recipe.recipeName}</th>
 											</thead>
@@ -236,7 +234,6 @@ class Presentational extends React.Component {
 	}
 
 	componentDidUpdate () {
-		console.log(this.props.recipes);
 		sessionStorage.setItem('state', JSON.stringify(this.props.recipes));
 	}
 };
