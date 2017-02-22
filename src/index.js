@@ -169,7 +169,7 @@ class Presentational extends React.Component {
 		return (
 			<div>
 			<div className="columns">
-			<div className="column" />
+			<div className="column is-one-quarter" />
 			<div className="column">
 				<ModalPresentational recipeId={this.state.recipeId} recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe} editRecipe={this.editRecipe}/>
 
@@ -229,7 +229,7 @@ class Presentational extends React.Component {
 				</p>
 				</footer>
 			</div>
-			<div className="column" />
+			<div className="column is-one-quarter" />
 			</div>
 			</div>
 		);
