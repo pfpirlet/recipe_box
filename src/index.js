@@ -161,6 +161,7 @@ class Presentational extends React.Component {
 	componentWillMount () {
 		this.props.recipes.map(()=>{
 			this.setState({isClicked: [].concat(false)});
+			return "";
 		});
 	}
 
