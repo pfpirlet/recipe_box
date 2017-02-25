@@ -35,7 +35,7 @@ const editRecipe = (recipeId, recipeName, recipeIngredients) => {
 
 const recipeReducer = (state, action) => {
 	var stateLength = (state) => {
-		if (isNaN(state[state.length - 1]["recipeId"] + 1) === 1) {
+		if (state.length === 0) {
 			return 1;
 		} else {
 			return state[state.length - 1]["recipeId"] + 1;
@@ -66,11 +66,15 @@ const recipeReducer = (state, action) => {
 	}
 }
 
-const initialState = [{ 
-  recipeId: 0, recipeName: "Paella", recipeIngredients: "Rice, saffron, jámon, mossels"
-}];
+const initialState = () => {
+	if (sessionStorage.length !== 0) {
+		return JSON.parse(sessionStorage.getItem('state'));
+	} else {
+		return [{recipeId: 0, recipeName: "Paella", recipeIngredients: "Rice, saffron, jámon, mossels"}];
+	}
+}
 
-const store = createStore(recipeReducer, initialState);
+const store = createStore(recipeReducer, initialState());
 
 //React-redux______________________________________
 
@@ -99,7 +103,8 @@ class Presentational extends React.Component {
 		this.state = {
 			recipeId: '',
 			recipeName: '',
-			recipeIngredients: ''
+			recipeIngredients: '',
+			isClicked: true
 		}
 	}
 
@@ -153,11 +158,18 @@ class Presentational extends React.Component {
 		document.getElementById('myModal').style.display = "block";
 	}
 
+	componentWillMount () {
+		this.props.recipes.map(()=>{
+			this.setState({isClicked: [].concat(false)});
+			return "";
+		});
+	}
+
 	render() {
 		return (
 			<div>
 			<div className="columns">
-			<div className="column" />
+			<div className="column is-one-quarter" />
 			<div className="column">
 				<ModalPresentational recipeId={this.state.recipeId} recipeName={this.state.recipeName} recipeIngredients={this.state.recipeIngredients} handleChangeName={this.handleChangeName} handleChangeIngredients={this.handleChangeIngredients} submitRecipe={this.submitRecipe} cancelRecipe={this.cancelRecipe} editRecipe={this.editRecipe}/>
 
@@ -167,23 +179,18 @@ class Presentational extends React.Component {
 				<ul>
 					{this.props.recipes.map((recipe, idx) => {
 						var keyValue = recipe.recipeId;
-						var tableId = "table-" + keyValue;
 						var ingredients = recipe.recipeIngredients.split(",");
 						return (
 							<div className="columns">
 								<div className="column">
 										<table className="table is-striped">
 											<thead onClick={() => {
-												console.log(tableId);
-												document.getElementById({tableId}).style.display === 'none' ? document.getElementById({tableId}).style.display = 'block' : document.getElementById({tableId}).style.display = 'none';
-											}}>
+												var localIsClicked = [...this.state.isClicked];
+												localIsClicked[keyValue] ? this.setState({isClicked: localIsClicked.slice(0,keyValue).concat(false).concat(localIsClicked.slice(keyValue + 1))}) : this.setState({isClicked: localIsClicked.slice(0,keyValue).concat(true).concat(localIsClicked.slice(keyValue + 1))});
+												}}>
 												<th>{recipe.recipeName}</th>
 											</thead>
-											<tbody ref={tableId} style={{display: 'none'}}>
-												{ingredients.map((item) => {
-													return <tr><th>{item}</th></tr>;
-												})}
-											</tbody>
+											{this.state.isClicked[keyValue] ? <IngredientsTable ingredients={ingredients}/> : ""}
 										</table>
 								</div>
 								<div className="column is-narrow">
@@ -213,20 +220,36 @@ class Presentational extends React.Component {
 				<footer>
 				<p className="control">
 					<p className="has-text-centered">
-						A project by <a link="https://github.com/pfpirlet">pfpirlet</a>
+						A project by <a href="https://github.com/pfpirlet">pfpirlet</a>
 					</p>
 					<p className="has-text-centered">
-						Sources: <a link="https://github.com/pfpirlet/recipe_box">https://github.com/pfpirlet/recipe_box</a>
+						Sources: <a href="https://github.com/pfpirlet/recipe_box">https://github.com/pfpirlet/recipe_box</a>
 					</p>
 				</p>
 				</footer>
 			</div>
-			<div className="column" />
+			<div className="column is-one-quarter" />
 			</div>
 			</div>
 		);
 	}
+
+	componentDidUpdate () {
+		sessionStorage.setItem('state', JSON.stringify(this.props.recipes));
+	}
 };
+
+class IngredientsTable extends React.Component {
+	render () {
+		return (
+			<tbody>
+				{this.props.ingredients.map((item) => {
+					return <tr><th>{item}</th></tr>;
+				})}
+			</tbody>	
+			)
+	}
+}
 
 class ModalPresentational extends React.Component {
 	render () {
